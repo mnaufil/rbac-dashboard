@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use App\Policies\UserPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -20,6 +23,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-         Schema::defaultStringLength(191);
+        Schema::defaultStringLength(191);
+
+        Gate::define('access-admin', function($user){
+           return $user->hasRole('admin');
+        });
+
+        Gate::policy(User::class, UserPolicy::class);
     }
 }
