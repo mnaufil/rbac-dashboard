@@ -1,9 +1,22 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/users', [UserController::class, 'index'])
+        ->middleware('can:access-admin');
+
+    Route::get('/users/{id}/edit', [UserController::class, 'edit']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    
+
+});
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,9 +42,6 @@ Route::get('/test-edit/{id}', function($id){
     return 'You can edit this user';
 
 })->middleware('auth');
-
-
-
 
 Route::get('/dashboard', function () {
     return view('dashboard');
