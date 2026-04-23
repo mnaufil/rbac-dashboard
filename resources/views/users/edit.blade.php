@@ -40,6 +40,21 @@
                     @enderror
                 </div>
 
+                @can('access-admin')
+                <div class="mb-3">
+                    <label>Role</label>
+
+                    <select name="role" class="w-full border p-2 rounded">
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->id }}"
+                                @if($user->roles->first()?->id == $role->id) selected @endif>
+                                {{ $role->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endcan
+
                 <div class="flex items-center justify-end gap-x-3 border-t border-gray-900/10 pt-6">
                     <a href="/users" class="text-sm font-semibold leading-6 text-gray-900">Cancel</a>
                     <button type="submit" 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\UpdateUserRequest;
@@ -25,20 +26,29 @@ class UserController extends Controller
             abort(403);
         }
 
-        return view('users.edit', compact('user'));
+        $roles = Role::all();
+
+        return view('users.edit', compact('user', 'roles'));
     }
 
     public function update(UpdateUserRequest  $request, $id){
 
         $user = User::findOrFail($id);
 
-            // 🔐 Policy check
         if (!Gate::allows('update', $user)) {
             abort(403);
         }
 
-        // 💾 Update
-        $user->update($request->validated());
+        $validated = $request->validated();
+
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            ]);
+
+        if(auth()->user()->hasRole('admin') && isset($validated['role'])){
+            $user->roles()->sync([$request->role]);
+        }
 
         return redirect('/users')->with('success', 'User updated successfully');
     }
@@ -47,7 +57,6 @@ class UserController extends Controller
 
         $user = User::findOrFail($id);
 
-        // 🔐 Authorization (Gate → Policy)
         if (!Gate::allows('delete', $user)) {
             abort(403);
         }
