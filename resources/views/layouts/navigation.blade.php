@@ -20,6 +20,11 @@
                         {{ __('Users') }}
                     </x-nav-link>
                     @endcan
+                    @can('manage-roles')
+                    <x-nav-link href="/roles" :active="request()->is('roles*')">
+                        {{ __('Roles') }}
+                    </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -77,6 +82,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link href="/users" :active="request()->is('users*')">
                 {{ __('Users') }}
+             </x-responsive-nav-link>
+            <x-responsive-nav-link href="/users" :active="request()->is('users*')">
+                {{ __('Roles') }}
              </x-responsive-nav-link>
         </div>
 

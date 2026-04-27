@@ -30,5 +30,22 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::policy(User::class, UserPolicy::class);
+
+        Gate::define('view-user', function($user){
+            return $user->hasPermission('view-user');
+        });
+        
+        Gate::define('edit-user', function($user){
+            return $user->hasPermission('edit-user');
+        });
+
+        Gate::define('delete-user', function($user){
+            return $user->hasPermission('delete-user');
+        });
+
+        Gate::define('manage-roles', function ($user){
+            return $user->hasPermission('manage-roles');
+        });
+
     }
 }

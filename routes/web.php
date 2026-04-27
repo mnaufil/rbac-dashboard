@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Gate;
@@ -8,13 +9,20 @@ use App\Models\User;
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/users', [UserController::class, 'index'])
-        ->middleware('can:access-admin');
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index')->middleware('can:view-user');
+        Route::get('/users/{id}/edit', 'edit');
+        Route::put('/users/{id}', 'update');
+        Route::delete('/users/{id}', 'destroy');
+    });
 
-    Route::get('/users/{id}/edit', [UserController::class, 'edit']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
-    
+    Route::controller(RoleController::class)
+        ->middleware('can:manage-roles')
+        ->group(function () {
+            Route::get('/roles', 'index');
+            Route::get('/roles/{id}/edit', 'edit');
+            Route::put('/roles/{id}', 'update');
+        });
 
 });
 
