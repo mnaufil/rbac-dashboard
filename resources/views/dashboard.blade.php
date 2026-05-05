@@ -1,9 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        {{-- <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Dashboard') }}
-        </h2>
-
+        </h2> --}}
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        {{ __("You're logged in!") }}
+                    </div>
+                </div>
+            </div>
+        </div>
+     @can('view-user')
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
             <div class="relative overflow-hidden bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
@@ -59,59 +68,53 @@
             </div>
 
         </div>
-
+   
         <div class="mt-10 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-    <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-        <h2 class="text-lg font-bold text-slate-900 tracking-tight">Recent Users</h2>
-        <a href="/users" class="text-xs font-bold text-blue-600 hover:text-blue-700 uppercase tracking-widest transition">
-            View All Users →
-        </a>
-    </div>
-
-    <div class="divide-y divide-slate-100">
-        @foreach($recentUsers as $user)
-            <div class="px-6 py-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors group">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-sm group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all">
-                        {{ strtoupper(substr($user->name, 0, 1)) }}
-                    </div>
-                    
-                    <div>
-                        <p class="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition">
-                            {{ $user->name }}
-                        </p>
-                        <p class="text-xs text-slate-500 font-medium">
-                            {{ $user->email }}
-                        </p>
-                    </div>
-                </div>
-
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">
-                        Joined {{ $user->created_at->format('M d, Y') }}
-                    </p>
-                </div>
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-900 tracking-tight">Recent Users</h2>
+                <a href="/users" class="text-xs font-bold text-blue-600 hover:text-blue-700 uppercase tracking-widest transition">
+                    View All Users →
+                </a>
             </div>
-        @endforeach
-    </div>
 
-    @if($recentUsers->isEmpty())
-        <div class="p-10 text-center">
-            <p class="text-sm text-slate-400 font-medium italic">No users found recently.</p>
+            <div class="divide-y divide-slate-100">
+                @foreach($recentUsers as $user)
+                    <div class="px-6 py-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors group">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-sm group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-all">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
+                            
+                            <div>
+                                <p class="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition">
+                                    {{ $user->name }}
+                                </p>
+                                <p class="text-xs text-slate-500 font-medium">
+                                    {{ $user->email }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="text-right hidden sm:block">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">
+                                Joined {{ $user->created_at->format('M d, Y') }}
+                            </p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            @if($recentUsers->isEmpty())
+                <div class="p-10 text-center">
+                    <p class="text-sm text-slate-400 font-medium italic">No users found recently.</p>
+                </div>
+            @endif
         </div>
-    @endif
-</div>
+    @endcan
+        
     </x-slot>
 
     
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </x-app-layout>

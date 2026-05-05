@@ -10,9 +10,10 @@ class UserSearch extends Component
 {
     use WithPagination;
     public $search = '';
+    public $sortField = 'name';
+    public $sortDirection = 'asc';
 
-    public function render()
-    {
+    public function render(){
 
         $query = User::query();
 
@@ -21,9 +22,21 @@ class UserSearch extends Component
                 ->orWhere('email', 'like', '%' . $this->search . '%');
         }
 
-        $users = $query->paginate(2);
+        $users = $query
+        ->orderBy($this->sortField, $this->sortDirection)
+        ->paginate(2);
 
         return view('livewire.user-search', compact('users'));
+    }
+
+    public function sortBy($field){
+        if ($this->sortField === $field) {
+            // toggle direction
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
     }
 
     
