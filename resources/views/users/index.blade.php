@@ -14,7 +14,8 @@
     </div>
 
     <div class="overflow-hidden bg-white shadow sm:rounded-lg border border-gray-200">
-        <table class="min-w-full divide-y divide-gray-200">
+        <livewire:user-search />
+        {{-- <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
                     <th scope="col" class="w-1/4 py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">Name</th>
@@ -49,6 +50,7 @@
                 </tr>
                 @endforeach
             </tbody>
-        </table>
+        </table> --}}
+
     </div>
 @endsection
