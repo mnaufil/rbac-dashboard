@@ -14,6 +14,31 @@ class RoleController extends Controller
         
         return view('roles.index', compact('roles')); 
     }
+   
+    public function create(){
+        
+        $permissions = Permission::all();
+
+        return view('roles.create', compact('permissions')); 
+    }
+
+    public function store(Request $request){
+        
+          $request->validate([
+        'name' => 'required|min:4',
+        ], [
+            'name.required' => 'Role name is required.',
+            'name.min' => 'Role name must be at least 4 characters.',
+        ]);
+
+        $role = Role::create([
+            'name' => $request->name
+        ]);
+
+        $role->permissions()->sync($request->permissions ?? []);
+
+        return redirect('/roles')->with('success', 'Role created successfully');
+    }
 
     public function edit($id){
         $role = Role::findOrFail($id);
@@ -25,9 +50,18 @@ class RoleController extends Controller
 
     public function update(Request $request, $id){
         
+        $request->validate([
+            'name' => 'required|min:4',
+        ], [
+            'name.required' => 'Role name is required.',
+            'name.min' => 'Role name must be at least 4 characters.',
+        ]);
+
         $role = Role::findOrFail($id);
         $role->permissions()->sync($request->permissions ?? []);
 
         return redirect('/roles')->with('success', 'Permission updated');
     }
+
+    
 }

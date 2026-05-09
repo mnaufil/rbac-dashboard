@@ -22,22 +22,18 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('can:manage-roles')
         ->group(function () {
             Route::get('/roles', 'index');
+            Route::get('/roles/create', 'create')->name('roles.create');
+            Route::post('/roles/store', 'store')->name('roles.store');
             Route::get('/roles/{id}/edit', 'edit');
+            Route::delete('/roles/{id}', 'destroy');
             Route::put('/roles/{id}', 'update');
-        });
+    });
 
 });
 
 Route::get('/', function () {
     return view('welcome');
 });
-
-// Route::get('/admin', function () {
-//     if(!Gate::allows('access-admin')){
-//         abort(403);
-//     }   
-//     return "Admin Dashboard";
-// })->middleware('role:admin');
 
 Route::get('/dashboard', function () {
 
