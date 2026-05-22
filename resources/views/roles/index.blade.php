@@ -56,7 +56,7 @@
                                 </a>
 
                                 {{-- Delete Button --}}
-                                <form action="/roles/{{ $role->id }}" method="POST" onsubmit="return confirm('Are you sure? This will remove all permissions associated with this role.');">
+                                <form action="/roles/{{ $role->id }}" method="POST" onsubmit="return confirm('Delete this role ? ');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" 

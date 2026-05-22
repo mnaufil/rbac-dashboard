@@ -62,6 +62,22 @@ class RoleController extends Controller
 
         return redirect('/roles')->with('success', 'Permission updated');
     }
+    
+    public function destroy($id){
+        $role = Role::findOrFail($id);
+
+        // Check if role has users
+        if ($role->users()->count() > 0) {
+
+            return redirect('/roles')
+                ->with('error', 'Role is assigned to users and cannot be deleted');
+        }
+
+        $role->delete();
+
+        return redirect('/roles')
+            ->with('success', 'Role deleted successfully');
+    }
 
     
 }
