@@ -65,6 +65,13 @@ class RoleController extends Controller
     
     public function destroy($id){
         $role = Role::findOrFail($id);
+        $protectedRole = ['admin', 'super-admin'];
+
+        if(in_array($role->name, $protectedRole)){
+            return redirect('/roles')
+                ->with('error', 'This role is protected and cannot be deleted');
+        }
+
 
         // Check if role has users
         if ($role->users()->count() > 0) {

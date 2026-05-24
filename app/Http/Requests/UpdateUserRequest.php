@@ -20,7 +20,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email',
-            'role' => 'nullable|exist:role,id'  ,
+            'role' => 'nullable|exists:roles,id'  ,
         ];
     }
 }
