@@ -7,14 +7,13 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\UpdateUserRequest;
-
+use App\Models\ActivityLog;
 
 class UserController extends Controller
 {
     public function index(){
         $users = User::all();
         return view('users.index', compact('users'));
-        // return 'Controller Working';
     }
 
     public function edit($id)
@@ -35,6 +34,9 @@ class UserController extends Controller
 
         $user = User::findOrFail($id);
 
+        $oldName = $user->name;
+        $oldEmail = $user->email;
+
         if (!Gate::allows('update', $user)) {
             abort(403);
         }
@@ -45,6 +47,16 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             ]);
+        
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'update-user',
+            'description' => auth()->user()->name .
+                ' updated user. Name: ' .
+                $oldName . ' → ' . $user->name .
+                ', Email: ' .
+                $oldEmail . ' → ' . $user->email
+        ]);
 
         if(auth()->user()->hasRole('admin') && isset($validated['role'])){
 
@@ -59,8 +71,25 @@ class UserController extends Controller
                 return redirect()->back()
                     ->with('error', 'You cannot remove your own admin role');
             }
-            
+
+            $oldRole = $user->roles->first()?->name;
+            $newRole = Role::find($validated['role']);
             $user->roles()->sync([$request->role]);
+
+            if ($oldRole !== $newRole->name) {
+
+                ActivityLog::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'change-role',
+                    'description' => auth()->user()->name .
+                        ' changed role of ' .
+                        $user->email .
+                        ' from ' .
+                        $oldRole .
+                        ' to ' .
+                        $newRole->name
+                ]);
+            }
         }
 
         return redirect('/users')->with('success', 'User updated successfully');
@@ -90,6 +119,12 @@ class UserController extends Controller
         }
 
         $user->delete();
+
+        ActivityLog::created([
+            'user_id' => auth()->id(),
+            'action' => 'delete-user',
+            'description' => auth()->user()->name . ' deleted user ' . $user->email
+        ]);
 
         return redirect('/users')->with('success', 'User deleted successfully');
     }

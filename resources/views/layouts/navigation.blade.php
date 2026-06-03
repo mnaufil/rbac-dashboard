@@ -33,6 +33,11 @@
                         {{ __('Roles') }}
                     </x-nav-link>
                     @endcan
+                    {{-- @can('activity-logs') --}}
+                    <x-nav-link href="/activity-logs" :active="request()->is('activity-logs*')">
+                        {{ __('Logs') }}
+                    </x-nav-link>
+                    {{-- @endcan --}}
                 </div>
             </div>
 

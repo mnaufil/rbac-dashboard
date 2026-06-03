@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
@@ -28,6 +29,8 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/roles/{id}', 'destroy');
             Route::put('/roles/{id}', 'update');
     });
+
+    Route::get('/activity-logs', [ActivityLogController::class, 'index']);
 
 });
 

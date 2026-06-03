@@ -3,8 +3,8 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\User;
 use Livewire\WithPagination;
+use App\Models\User;
 
 class UserSearch extends Component
 {

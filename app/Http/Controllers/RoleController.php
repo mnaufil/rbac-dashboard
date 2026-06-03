@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\Permission;
 use GrahamCampbell\ResultType\Success;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -37,6 +38,14 @@ class RoleController extends Controller
 
         $role->permissions()->sync($request->permissions ?? []);
 
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'create-role',
+            'description' => auth()->user()->name .
+                ' created role ' .
+                $role->name
+        ]);
+
         return redirect('/roles')->with('success', 'Role created successfully');
     }
 
@@ -58,7 +67,29 @@ class RoleController extends Controller
         ]);
 
         $role = Role::findOrFail($id);
+        $oldRoleName = $role->name;
         $role->permissions()->sync($request->permissions ?? []);
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'update-role-permissions',
+            'description' => auth()->user()->name .
+                ' updated permissions for role ' .
+                $role->name
+        ]);
+        
+        if ($oldRoleName !== $role->name) {
+
+            ActivityLog::create([
+                'user_id' => auth()->id(),
+                'action' => 'update-role',
+                'description' => auth()->user()->name .
+                    ' renamed role ' .
+                    $oldRoleName .
+                    ' to ' .
+                    $role->name
+            ]);
+        }
 
         return redirect('/roles')->with('success', 'Permission updated');
     }
@@ -80,7 +111,17 @@ class RoleController extends Controller
                 ->with('error', 'Role is assigned to users and cannot be deleted');
         }
 
+        $roleName = $role->name;
         $role->delete();
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'delete-role',
+            'description' => auth()->user()->name .
+                ' deleted role ' .
+                $roleName
+        ]);
+
 
         return redirect('/roles')
             ->with('success', 'Role deleted successfully');
